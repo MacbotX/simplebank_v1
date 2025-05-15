@@ -21,6 +21,7 @@ jobs:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: secret
             POSTGRES_DB: simple_bank
+            DB_SOURCE: "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable"
           options: >-
             --health-cmd pg_isready
             --health-interval 10s
