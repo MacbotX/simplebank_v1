@@ -9,11 +9,11 @@ dropdb:
 
 migrateup:
 	# migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
-	until migrate -path db/migration -database "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up; do echo "Waiting for DB..."; sleep 2; done
+	migrate -path db/migration -database "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable" -verbose up
 
 migratedown:
 	# migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
-	until migrate -path db/migration -database "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable" -verbose down; do echo "Waiting for DB..."; sleep 2; done
+	migrate -path db/migration -database "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable" -verbose down
 
 # to generate sqlc migrations
 sqlc:
