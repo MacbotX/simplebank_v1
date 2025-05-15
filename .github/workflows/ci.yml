@@ -16,7 +16,7 @@ jobs:
 
     services:
         postgres:
-          image: simplebank
+          image: postgres:17.4-alpine3.21
           env:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: secret
@@ -37,6 +37,6 @@ jobs:
 
       - name: Run migrations
         run: make migrateup
-        
+
       - name: Test
         run: make test
