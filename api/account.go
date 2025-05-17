@@ -14,7 +14,7 @@ type createAccountRequest struct {
 	Currency string `json:"currency" binding:"required,oneof=USD NGN GHS"`
 }
 
-//delete account by id
+//delete account by idvv
 
 func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
