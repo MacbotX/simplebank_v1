@@ -6,12 +6,8 @@ import (
 
 	"github.com/MacbotX/simplebank_v1/api"
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
+	"github.com/MacbotX/simplebank_v1/util"
 	"github.com/jackc/pgx/v5/pgxpool"
-)
-
-const (
-	dbSource      = "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
 )
 
 var (
@@ -19,14 +15,17 @@ var (
 )
 
 func main() {
-	var err error
-	conn, err = pgxpool.New(context.Background(), dbSource)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	conn, err = pgxpool.New(context.Background(), config.DBSource)
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
-	err = server.Start(serverAddress)
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}
