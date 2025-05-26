@@ -28,4 +28,7 @@ tidy:
 server:
 	go run main.go
 
-.PHONY: createdb dropdb postgres migrateup migratedown sqlc tidy test server
+mock:
+	mockgen -destination db/mock/store.go  github.com/MacbotX/simplebank_v1/db/sqlc Store
+
+.PHONY: createdb dropdb postgres migrateup migratedown sqlc tidy test server mock
