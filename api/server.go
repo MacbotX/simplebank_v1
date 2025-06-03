@@ -23,7 +23,7 @@ func NewServer(store db.Store) *Server {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
-	//create account router\
+	//create account router
 	router.POST("/accounts", server.createAccount)
 	//get account by id
 	router.GET("/accounts/:id", server.getAccount)
@@ -32,8 +32,12 @@ func NewServer(store db.Store) *Server {
 	//update accounts by id
 	router.PUT("/accounts/:id", server.updateAccounts)
 	router.DELETE("/accounts/:id", server.deleteAccounts)
+
 	// transfer tx from one account to another
 	router.POST("/transfer", server.createTransfer)
+
+	// Create user 
+	router.POST("/user", server.createUser)
 
 	server.router = router
 	return server

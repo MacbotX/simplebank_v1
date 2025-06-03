@@ -2,3 +2,10 @@ TODO
 unit test for account functions 
 unit test for transfer functions 
 
+
+CREATE USER atsuser WITH PASSWORD 'secret';
+ALTER ROLE atsuser SET client_encoding TO 'utf8';
+ALTER ROLE atsuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE atsuser SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE ats TO atsuser;
+\q

@@ -2,13 +2,16 @@ package api
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 	"net/http"
 
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
 
-// createAccountRequest
+// CreateAccount Request
 type createAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
@@ -29,6 +32,21 @@ func (server *Server) createAccount(ctx *gin.Context) {
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			log.Println("PostgreSQL error code:", pqErr.Code.Name())
+
+			switch pqErr.Code.Name() {
+			case "foreign_key_violation":
+				ctx.JSON(http.StatusBadRequest, errorResponse(err))
+				return
+			case "unique_violation":
+				ctx.JSON(http.StatusBadRequest, errorResponse(err))
+				return
+			}
+		}
+
+		// fallback generic
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -91,7 +109,6 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-
 // update account by id
 type updateAccountRequest struct {
 	ID      int64 `uri:"id" binding:"required,min=1"`
@@ -128,10 +145,9 @@ func (server *Server) updateAccounts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-
 // delete account by id
 type deleteAccountRequest struct {
-	ID      int64 `uri:"id" binding:"required,min=1"`
+	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
 func (server *Server) deleteAccounts(ctx *gin.Context) {
@@ -154,4 +170,3 @@ func (server *Server) deleteAccounts(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "account deleted"})
 }
-
