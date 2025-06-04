@@ -1,14 +1,14 @@
 package api
 
 import (
-	"errors"
+	"log"
 	"net/http"
 	"time"
 
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
 	"github.com/MacbotX/simplebank_v1/util"
 	"github.com/gin-gonic/gin"
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 // CreateUser Request
@@ -49,15 +49,16 @@ func (server *Server) createUser(ctx *gin.Context) {
 
 	user, err := server.store.CreateUser(ctx, arg)
 	if err != nil {
-		var pqErr *pq.Error
-		if errors.As(err, &pqErr) {
-			switch pqErr.Code.Name() {
-			case "unique_violation":
-				ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			log.Println("PostgreSQL error name:", pgErr.Code) // e.g., "23503"
+			switch pgErr.Code {
+			case "23505":
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
 				return
 			}
+		} else {
+			log.Println("Non-PostgreSQL error:", err)
 		}
-
 		// fallback generic
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
