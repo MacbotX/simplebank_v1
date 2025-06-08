@@ -1,7 +1,11 @@
 package api
 
 import (
+	"fmt"
+
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
+	"github.com/MacbotX/simplebank_v1/token"
+	"github.com/MacbotX/simplebank_v1/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
@@ -9,38 +13,35 @@ import (
 
 // Server serves HTTP request for our banking service
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	config     util.Config
+	store      db.Store
+	tokenMaker token.Maker
+	router     *gin.Engine
 }
 
 // NewServer creates a new HTTP server and setup routing
-func NewServer(store db.Store) *Server {
-	server := &Server{store: store}
-	router := gin.Default()
+func NewServer(config util.Config, store db.Store) (*Server, error) {
+	// TokenMaker is set to use pasetoMaker and can be changed to JWTMaker
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSynmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
+	server := &Server{
+		config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
+	}
+
+	// router func imported
+	server.setupRouter()
 
 	// to register validator with gin
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
-	//create account router
-	router.POST("/accounts", server.createAccount)
-	//get account by id
-	router.GET("/accounts/:id", server.getAccount)
-	//get all accounts
-	router.GET("/accounts", server.listAccounts)
-	//update accounts by id
-	router.PUT("/accounts/:id", server.updateAccounts)
-	router.DELETE("/accounts/:id", server.deleteAccounts)
-
-	// transfer tx from one account to another
-	router.POST("/transfer", server.createTransfer)
-
-	// Create user 
-	router.POST("/users", server.createUser)
-
-	server.router = router
-	return server
+	return server, nil
 }
 
 // Start runs the HTTP server on a specification address

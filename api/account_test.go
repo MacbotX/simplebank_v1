@@ -92,7 +92,7 @@ func TestGetAccountCreate(t *testing.T) {
 			// build stubs
 			tc.buildStubs(store)
 			// start test server and send request
-			server := NewServer(store)
+			server := newTestServer(t,store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -184,7 +184,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			// build stubs
 			tc.buildStubs(store)
 			// start test server and send request
-			server := NewServer(store)
+			server := newTestServer(t,store)
 			recorder := httptest.NewRecorder()
 
 			// Marshal the body data to JSON
@@ -288,7 +288,7 @@ func TestListAccountAPI(t *testing.T) {
 			// build stubs
 			tc.buildStubs(store)
 			// start test server and send request
-			server := NewServer(store)
+			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := "/accounts"
