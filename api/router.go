@@ -5,20 +5,20 @@ import "github.com/gin-gonic/gin"
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	//create account router
-	router.POST("/accounts", server.createAccount)
-	//get account by id
-	router.GET("/accounts/:id", server.getAccount)
-	//get all accounts
-	router.GET("/accounts", server.listAccounts)
-	//update accounts by id
-	router.PUT("/accounts/:id", server.updateAccounts)
-	router.DELETE("/accounts/:id", server.deleteAccounts)
+	// to add some route to make use of the auth middleware
+	authRoutes := router.Group("/").Use(authMiddleWare(server.tokenMaker))
 
-	// transfer tx from one account to another
-	router.POST("/transfer", server.createTransfer)
+	// Accounts router
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccounts)
+	authRoutes.PUT("/accounts/:id", server.updateAccounts)
+	authRoutes.DELETE("/accounts/:id", server.deleteAccounts)
 
-	// Create user
+	// Transfer route
+	authRoutes.POST("/transfer", server.createTransfer)
+
+	// User
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
 
