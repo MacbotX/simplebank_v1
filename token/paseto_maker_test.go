@@ -48,3 +48,19 @@ func TestExpiredPasetoToken(t *testing.T)  {
 	require.Nil(t, payload)
 
 }
+
+func TestTamperedPasetoToken(t *testing.T) {
+	maker, err := NewPasetoMaker(util.RandomString(32))
+	require.NoError(t, err)
+
+	token, err := maker.CreateToken(util.RandomOwner(), time.Minute)
+	require.NoError(t, err)
+
+	// Tamper token (e.g., change a character)
+	tamperedToken := token[:len(token)-1] + "x"
+
+	payload, err := maker.VerifyToken(tamperedToken)
+	require.Error(t, err)
+	require.EqualError(t, err, ErrInvalideToken.Error())
+	require.Nil(t, payload)
+}

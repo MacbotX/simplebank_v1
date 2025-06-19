@@ -66,3 +66,20 @@ func TestInvalideJWTTokenALgNone(t *testing.T)  {
 	require.Nil(t, payload)
 
 }
+
+func TestTamperedJWTToken(t *testing.T) {
+	maker, err := NewJWTMaker(util.RandomString(36))
+	require.NoError(t, err)
+
+	token, err := maker.CreateToken(util.RandomOwner(), time.Minute)
+	require.NoError(t, err)
+
+	// Tamper token by changing a character
+	tamperedToken := token[:len(token)-1] + "X"
+
+	payload, err := maker.VerifyToken(tamperedToken)
+	require.Error(t, err)
+	require.EqualError(t, err, ErrInvalideToken.Error())
+	require.Nil(t, payload)
+}
+
