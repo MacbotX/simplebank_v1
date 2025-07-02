@@ -15,7 +15,8 @@ import (
 
 	mock_db "github.com/MacbotX/simplebank_v1/db/mock"
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
-	"github.com/MacbotX/simplebank_v1/token"
+	"github.com/MacbotX/simplebank_v1/pkg/token"
+
 )
 
 func TestTransferAPI(t *testing.T) {

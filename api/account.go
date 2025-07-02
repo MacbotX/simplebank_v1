@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	db "github.com/MacbotX/simplebank_v1/db/sqlc"
-	"github.com/MacbotX/simplebank_v1/token"
+	"github.com/MacbotX/simplebank_v1/pkg/token"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 )
@@ -79,7 +79,7 @@ func (server *Server) getAccount(ctx *gin.Context) {
 	}
 	// to get account of the login user
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	if account.Owner != authPayload.Username{
+	if account.Owner != authPayload.Username {
 		err := errors.New("account doesnt belong to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
@@ -102,7 +102,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.ListAccountsParams{
-		Owner: authPayload.Username,
+		Owner:  authPayload.Username,
 		Limit:  int32(req.PageSize),
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
@@ -115,7 +115,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, account)
 }
 
