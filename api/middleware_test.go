@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/MacbotX/simplebank_v1/token"
+	"github.com/MacbotX/simplebank_v1/pkg/token"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )

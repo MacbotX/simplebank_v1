@@ -29,8 +29,9 @@ COPY --from=builder /app/migrate ./
 
 # Copy env file and migration files
 COPY app.env .
-COPY start.sh .
-COPY wait-for.sh .
+COPY compose/start.sh .
+COPY compose/wait-for.sh .
+
 
 RUN chmod +x /app/start.sh /app/wait-for.sh
 
