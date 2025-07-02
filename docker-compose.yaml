@@ -3,10 +3,12 @@ services:
   postgres:
     image: postgres:17.4-alpine3.21
     container_name: simplebank_postgres
+
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=simple_bank
+
 
   mailpit:
     image: axllent/mailpit:latest

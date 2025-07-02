@@ -32,6 +32,7 @@ COPY app.env .
 COPY compose/start.sh .
 COPY compose/wait-for.sh .
 
+
 RUN chmod +x /app/start.sh /app/wait-for.sh
 
 COPY db/migration ./migration
