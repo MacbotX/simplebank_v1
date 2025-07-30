@@ -21,6 +21,7 @@ func (server *Server) setupRouter() {
 	// User
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
+	router.POST("/token/refresh-token", server.renewAccessToken)
 
 	server.router = router
 }

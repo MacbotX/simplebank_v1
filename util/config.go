@@ -13,6 +13,15 @@ type Config struct {
 	ServerAddress string `mapstructure:"SERVER_ADDRESS"`
 	TokenSynmetricKey string `mapstructure:"TOKEN_SYNMETRIC_KEY"`
 	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	MailtrapURL              string        `mapstructure:"MAILTRAP_URL"`
+	MailtrapAuthToken        string        `mapstructure:"MAILTRAP_AUTH_TOKEN"`
+	SendGridURL              string        `mapstructure:"SENDGRID_URL"`
+	SendGridAuthToken        string        `mapstructure:"SENDGRID_AUTH_TOKEN"`
+	DefaultFromEmail         string        `mapstructure:"DEFAULT_FROM_EMAIL"`
+	EmailSubjectPrefit       string        `mapstructure:"EMAIL_SUBJECT_PREFIX"`
+	Provider                 string        `mapstructure:"EMAIL_PROVIDER"`
+	VerificationCodeDuration time.Duration `mapstructure:"VERIFICATION_CODE_DURATION"`
+	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
 }
 
 // LoadConfig reads configuration from file or environment variables
