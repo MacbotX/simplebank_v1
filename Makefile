@@ -1,3 +1,5 @@
+DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
+
 postgres:
 	docker run --name simplebank -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17.4-alpine3.21
 
@@ -8,16 +10,16 @@ dropdb:
 	docker exec -it simplebank dropdb simple_bank
 
 migrateup:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migrateup1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose up 1
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
+	migrate -path db/migration -database "$(DB_URL)" -verbose down
 
 migratedown1:
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
 
 createmigration:
 	migrate create -ext sql -dir db/migration -seq add_sessions
@@ -25,6 +27,12 @@ createmigration:
 # to generate sqlc migrations
 sqlc:
 	sqlc generate
+
+db_docs:
+	dbdocs build doc/db.dbml
+
+db_schema:
+	dbml2sql doc/db.dbml -o doc/db.sql
 
 # to test go file and funcs 
 test:
@@ -40,4 +48,4 @@ server:
 mock:
 	mockgen -destination db/mock/store.go  github.com/MacbotX/simplebank_v1/db/sqlc Store
 
-.PHONY: createdb dropdb postgres migrateup migratedown sqlc tidy test server mock migrateup1 migratedown1
+.PHONY: createdb dropdb postgres migrateup migratedown sqlc tidy test server mock migrateup1 migratedown1 db_docs db_schema
